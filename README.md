@@ -1,6 +1,6 @@
 # Real-Time Crypto Market Analytics Pipeline
 
-![Architecture Diagram](architecture/architecture.svg)
+![Architecture Diagram](architecture/real_time_crypto_analytics_pipeline_diagram.png)
 
 ## Project Overview
 
