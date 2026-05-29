@@ -1,8 +1,6 @@
 # Real-Time Crypto Market Analytics Pipeline
 
-```markdown
 ![Architecture Diagram](architecture/architecture.svg)
-```
 
 ## Project Overview
 
