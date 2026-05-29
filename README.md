@@ -477,23 +477,33 @@ FROM crypto_analytics.pipeline_health_summary;
 
 ## Screenshots
 
-Add screenshots in the `screenshots/` folder and reference them here.
+### Docker Containers Running
 
-Suggested screenshots:
+![Docker Containers Running](screenshots/docker-running-processes.png)
 
-```text
-screenshots/docker-compose-running.png
-screenshots/airflow-dag-success.png
-screenshots/clickhouse-raw-events.png
-screenshots/dbt-test-success.png
-screenshots/pipeline-health-summary.png
-```
+---
 
-Example Markdown:
+### Airflow DAG Success
 
-```markdown
 ![Airflow DAG Success](screenshots/airflow-dag-success.png)
-```
+
+---
+
+### ClickHouse RAW Events
+
+![ClickHouse RAW Events](screenshots/clickhouse-raw-events.png)
+
+---
+
+### dbt Test Success
+
+![dbt Test Success](screenshots/dbt-test-success.png)
+
+---
+
+### Pipeline Health Summary
+
+![Pipeline Health Summary](screenshots/pipeline-health-summary.png)
 
 ---
 
