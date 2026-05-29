@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER", "kafka:9092")
+KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "crypto_prices")
+
 CLICKHOUSE_HOST = os.getenv("CLICKHOUSE_HOST", "clickhouse")
 CLICKHOUSE_PORT = int(os.getenv("CLICKHOUSE_PORT", "8123"))
 CLICKHOUSE_DB = os.getenv("CLICKHOUSE_DB", "crypto_analytics")
@@ -52,10 +54,10 @@ def create_kafka_consumer():
     while True:
         try:
             consumer = KafkaConsumer(
-                "crypto_prices",
+                KAFKA_TOPIC,
                 bootstrap_servers=KAFKA_BOOTSTRAP_SERVER,
                 group_id="crypto_clickhouse_consumer_group",
-                auto_offset_reset="earliest",
+                auto_offset_reset="latest",
                 enable_auto_commit=True,
                 value_deserializer=lambda x: json.loads(x.decode("utf-8")),
             )
@@ -107,7 +109,49 @@ def log_consumer_metrics(status="running"):
     )
 
 
-logger.info("Crypto consumer started")
+def is_valid_ticker_event(event):
+    required_fields = [
+        "event_id",
+        "event_timestamp",
+        "source",
+        "symbol",
+        "base_asset",
+        "quote_asset",
+        "price",
+        "open_price",
+        "high_price",
+        "low_price",
+        "volume",
+        "quote_volume",
+    ]
+
+    for field in required_fields:
+        if field not in event:
+            return False, f"Missing required field: {field}"
+
+    numeric_fields = [
+        "price",
+        "open_price",
+        "high_price",
+        "low_price",
+        "volume",
+        "quote_volume",
+    ]
+
+    for field in numeric_fields:
+        if event.get(field) is None:
+            return False, f"Missing numeric value: {field}"
+
+        if float(event.get(field)) < 0:
+            return False, f"Negative numeric value: {field}"
+
+    if not event.get("symbol", "").endswith("USDT"):
+        return False, "Only USDT pairs are supported"
+
+    return True, None
+
+
+logger.info("Binance WebSocket crypto consumer started")
 
 
 for message in consumer:
@@ -115,29 +159,14 @@ for message in consumer:
     events_processed += 1
 
     try:
-        prices = event.get("prices", {})
+        is_valid, error_message = is_valid_ticker_event(event)
 
-        if "bitcoin" not in prices or "ethereum" not in prices:
+        if not is_valid:
             invalid_events += 1
-            error_message = "Missing bitcoin or ethereum price data"
 
             logger.warning(
-                f"Skipping invalid event | event_id={event.get('event_id')} | error={error_message}"
-            )
-
-            log_failed_event(event, error_message)
-            log_consumer_metrics()
-            continue
-
-        bitcoin_price = prices["bitcoin"].get("usd")
-        ethereum_price = prices["ethereum"].get("usd")
-
-        if bitcoin_price is None or ethereum_price is None:
-            invalid_events += 1
-            error_message = "Missing bitcoin_price or ethereum_price value"
-
-            logger.warning(
-                f"Skipping event with missing prices | event_id={event.get('event_id')} | error={error_message}"
+                f"Skipping invalid ticker event | "
+                f"event_id={event.get('event_id')} | error={error_message}"
             )
 
             log_failed_event(event, error_message)
@@ -148,26 +177,41 @@ for message in consumer:
             event["event_id"],
             datetime.fromisoformat(event["event_timestamp"]),
             event["source"],
-            bitcoin_price,
-            ethereum_price,
+            event["symbol"],
+            event["base_asset"],
+            event["quote_asset"],
+            float(event["price"]),
+            float(event["open_price"]),
+            float(event["high_price"]),
+            float(event["low_price"]),
+            float(event["volume"]),
+            float(event["quote_volume"]),
         ]]
 
         client.insert(
-            "raw_crypto_prices",
+            "raw_crypto_ticker_events",
             row,
             column_names=[
                 "event_id",
                 "event_timestamp",
                 "source",
-                "bitcoin_price",
-                "ethereum_price",
+                "symbol",
+                "base_asset",
+                "quote_asset",
+                "price",
+                "open_price",
+                "high_price",
+                "low_price",
+                "volume",
+                "quote_volume",
             ],
         )
 
         events_inserted += 1
 
         logger.info(
-            f"Inserted event into ClickHouse | event_id={event.get('event_id')}"
+            f"Inserted Binance ticker event into ClickHouse | "
+            f"event_id={event.get('event_id')} | symbol={event.get('symbol')}"
         )
 
         log_consumer_metrics()
@@ -177,7 +221,7 @@ for message in consumer:
         error_message = str(e)
 
         logger.exception(
-            f"Error processing event | event_id={event.get('event_id')}"
+            f"Error processing ticker event | event_id={event.get('event_id')}"
         )
 
         try:

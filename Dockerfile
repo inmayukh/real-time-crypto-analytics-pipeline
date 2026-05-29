@@ -10,4 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ingestion ./ingestion
 
+COPY dashboard ./dashboard
+
 CMD ["python", "ingestion/crypto_producer.py"]

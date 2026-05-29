@@ -1,3 +1,6 @@
 kafka-python
 requests
 clickhouse-connect
+websocket-client
+streamlit
+pandas
