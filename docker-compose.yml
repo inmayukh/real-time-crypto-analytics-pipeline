@@ -71,7 +71,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
       AIRFLOW__WWW_USER__USERNAME: ${AIRFLOW_USER}
       AIRFLOW__WWW_USER__PASSWORD: ${AIRFLOW_PASSWORD}
-      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-clickhouse"
+      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-clickhouse clickhouse-connect"
     volumes:
       - airflow_data:/opt/airflow
       - ./airflow/dags:/opt/airflow/dags
@@ -112,6 +112,21 @@ services:
       - clickhouse
     restart: unless-stopped
     command: python ingestion/crypto_consumer.py
+
+  streamlit_dashboard:
+    build: .
+    container_name: streamlit_dashboard
+    depends_on:
+      - clickhouse
+    ports:
+      - "8501:8501"
+    environment:
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    command: streamlit run dashboard/app.py --server.address=0.0.0.0 --server.port=8501
 
 volumes:
   clickhouse_data:

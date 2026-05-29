@@ -62,3 +62,22 @@ CREATE TABLE IF NOT EXISTS crypto_analytics.producer_api_metrics
 )
 ENGINE = MergeTree()
 ORDER BY metric_timestamp;
+
+CREATE TABLE IF NOT EXISTS crypto_analytics.raw_crypto_ticker_events
+(
+    event_id String,
+    event_timestamp DateTime,
+    ingestion_timestamp DateTime DEFAULT now(),
+    source String,
+    symbol String,
+    base_asset String,
+    quote_asset String,
+    price Float64,
+    open_price Float64,
+    high_price Float64,
+    low_price Float64,
+    volume Float64,
+    quote_volume Float64
+)
+ENGINE = MergeTree()
+ORDER BY (symbol, event_timestamp);

@@ -90,3 +90,53 @@ models:
       - name: latest_consumer_metric_time
         tests:
           - not_null
+  - name: stg_crypto_ticker_events
+    description: Cleaned and deduplicated Binance WebSocket ticker events
+
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+
+      - name: symbol
+        tests:
+          - not_null
+
+      - name: price
+        tests:
+          - not_null
+
+      - name: event_timestamp
+        tests:
+          - not_null
+
+  - name: latest_crypto_ticker_prices
+    description: Latest known ticker price per crypto symbol
+
+    columns:
+      - name: symbol
+        tests:
+          - not_null
+          - unique
+
+      - name: price
+        tests:
+          - not_null
+
+      - name: event_timestamp
+        tests:
+          - not_null
+
+  - name: crypto_volume_leaderboard
+    description: Volume leaderboard for tracked crypto symbols
+
+    columns:
+      - name: symbol
+        tests:
+          - not_null
+          - unique
+
+      - name: quote_volume
+        tests:
+          - not_null

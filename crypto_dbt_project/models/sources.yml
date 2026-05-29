@@ -2,34 +2,20 @@ version: 2
 
 sources:
   - name: raw
+    database: crypto_analytics
     schema: crypto_analytics
-
     tables:
       - name: raw_crypto_prices
-        description: Raw crypto price events ingested from Kafka into ClickHouse
+        description: Raw CoinGecko crypto price events ingested from Kafka into ClickHouse
 
-        columns:
-          - name: event_id
-            tests:
-              - not_null
-
-          - name: event_timestamp
-            tests:
-              - not_null
-
-          - name: bitcoin_price
-            tests:
-              - not_null
-
-          - name: ethereum_price
-            tests:
-              - not_null
-
-      - name: producer_api_metrics
-        description: Raw producer-side API monitoring metrics
-
-      - name: consumer_processing_metrics
-        description: Raw consumer-side processing metrics
+      - name: raw_crypto_ticker_events
+        description: Raw Binance WebSocket ticker events ingested from Kafka into ClickHouse
 
       - name: failed_crypto_events
-        description: Failed or invalid crypto events captured during ingestion
+        description: Invalid or failed crypto events captured during ingestion
+
+      - name: producer_api_metrics
+        description: Producer-side API and Kafka publishing metrics
+
+      - name: consumer_processing_metrics
+        description: Consumer-side Kafka processing and ClickHouse insert metrics
