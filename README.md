@@ -1,6 +1,8 @@
 # Real-Time Crypto Market Analytics Pipeline
 
-![Architecture Diagram](../AppData/Local/Temp/096e2b9a-b279-4b04-b847-5b65022e7463_project2_github_polish_files.zip.463/architecture/architecture.png)
+```markdown
+![Architecture Diagram](architecture/architecture.svg)
+```
 
 ## Project Overview
 

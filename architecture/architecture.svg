@@ -1,0 +1,102 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 44px; font-weight: 800; fill: #111827; }
+      .box-title { font-family: Arial, sans-serif; font-size: 25px; font-weight: 800; fill: #111827; }
+      .box-text { font-family: Arial, sans-serif; font-size: 19px; fill: #374151; }
+      .small { font-family: Arial, sans-serif; font-size: 18px; fill: #374151; }
+      .blue { fill: #EFF6FF; stroke: #1D4ED8; stroke-width: 3; }
+      .green { fill: #ECFDF5; stroke: #047857; stroke-width: 3; }
+      .orange { fill: #FFF7ED; stroke: #C2410C; stroke-width: 3; }
+      .pink { fill: #FDF2F8; stroke: #BE185D; stroke-width: 3; }
+      .gray { fill: #F9FAFB; stroke: #6B7280; stroke-width: 2; }
+      .arrow { stroke: #111827; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 8 7; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#111827"/>
+    </marker>
+  </defs>
+
+  <text x="800" y="60" text-anchor="middle" class="title">Real-Time Crypto Market Analytics Pipeline</text>
+
+  <rect x="50" y="120" rx="18" ry="18" width="230" height="120" class="blue"/>
+  <text x="165" y="165" text-anchor="middle" class="box-title">CoinGecko API</text>
+  <text x="165" y="198" text-anchor="middle" class="box-text">Live BTC/ETH</text>
+  <text x="165" y="225" text-anchor="middle" class="box-text">price source</text>
+
+  <rect x="350" y="120" rx="18" ry="18" width="240" height="120" class="blue"/>
+  <text x="470" y="165" text-anchor="middle" class="box-title">Python Producer</text>
+  <text x="470" y="198" text-anchor="middle" class="box-text">Dockerized API</text>
+  <text x="470" y="225" text-anchor="middle" class="box-text">ingestion</text>
+
+  <rect x="660" y="120" rx="18" ry="18" width="230" height="120" class="blue"/>
+  <text x="775" y="165" text-anchor="middle" class="box-title">Kafka Topic</text>
+  <text x="775" y="198" text-anchor="middle" class="box-text">crypto_prices</text>
+  <text x="775" y="225" text-anchor="middle" class="box-text">event stream</text>
+
+  <rect x="960" y="120" rx="18" ry="18" width="250" height="120" class="blue"/>
+  <text x="1085" y="165" text-anchor="middle" class="box-title">Python Consumer</text>
+  <text x="1085" y="198" text-anchor="middle" class="box-text">Validates and</text>
+  <text x="1085" y="225" text-anchor="middle" class="box-text">writes events</text>
+
+  <rect x="1280" y="120" rx="18" ry="18" width="250" height="120" class="blue"/>
+  <text x="1405" y="165" text-anchor="middle" class="box-title">ClickHouse RAW</text>
+  <text x="1405" y="198" text-anchor="middle" class="box-text">raw_crypto_prices</text>
+
+  <path d="M280 180 L350 180" class="arrow"/>
+  <path d="M590 180 L660 180" class="arrow"/>
+  <path d="M890 180 L960 180" class="arrow"/>
+  <path d="M1210 180 L1280 180" class="arrow"/>
+
+  <rect x="390" y="390" rx="18" ry="18" width="300" height="130" class="green"/>
+  <text x="540" y="438" text-anchor="middle" class="box-title">dbt Staging</text>
+  <text x="540" y="472" text-anchor="middle" class="box-text">stg_crypto_prices</text>
+  <text x="540" y="500" text-anchor="middle" class="box-text">Dedup + validation</text>
+
+  <rect x="805" y="390" rx="18" ry="18" width="300" height="130" class="green"/>
+  <text x="955" y="438" text-anchor="middle" class="box-title">dbt Marts</text>
+  <text x="955" y="472" text-anchor="middle" class="box-text">crypto_price_metrics</text>
+  <text x="955" y="500" text-anchor="middle" class="box-text">latest_crypto_prices</text>
+
+  <path d="M1405 240 L1405 310 L540 310 L540 390" class="arrow"/>
+  <path d="M690 455 L805 455" class="arrow"/>
+
+  <rect x="1220" y="380" rx="18" ry="18" width="300" height="150" class="orange"/>
+  <text x="1370" y="430" text-anchor="middle" class="box-title">Airflow DAG</text>
+  <text x="1370" y="465" text-anchor="middle" class="box-text">Runs dbt run</text>
+  <text x="1370" y="493" text-anchor="middle" class="box-text">then dbt test</text>
+  <path d="M1220 455 L1105 455" class="arrow"/>
+  <text x="1160" y="438" text-anchor="middle" class="small">orchestrates</text>
+
+  <rect x="80" y="690" rx="18" ry="18" width="310" height="135" class="pink"/>
+  <text x="235" y="738" text-anchor="middle" class="box-title">Producer Metrics</text>
+  <text x="235" y="772" text-anchor="middle" class="box-text">producer_api_metrics</text>
+  <text x="235" y="800" text-anchor="middle" class="box-text">API calls, rate limits</text>
+
+  <rect x="465" y="690" rx="18" ry="18" width="330" height="135" class="pink"/>
+  <text x="630" y="738" text-anchor="middle" class="box-title">Consumer Metrics</text>
+  <text x="630" y="772" text-anchor="middle" class="box-text">consumer_processing_metrics</text>
+  <text x="630" y="800" text-anchor="middle" class="box-text">Inserted, invalid, failed</text>
+
+  <rect x="870" y="690" rx="18" ry="18" width="320" height="135" class="pink"/>
+  <text x="1030" y="738" text-anchor="middle" class="box-title">Failed Events</text>
+  <text x="1030" y="772" text-anchor="middle" class="box-text">failed_crypto_events</text>
+  <text x="1030" y="800" text-anchor="middle" class="box-text">Malformed payloads</text>
+
+  <rect x="1260" y="690" rx="18" ry="18" width="300" height="135" class="pink"/>
+  <text x="1410" y="738" text-anchor="middle" class="box-title">Health Summary</text>
+  <text x="1410" y="772" text-anchor="middle" class="box-text">pipeline_health_summary</text>
+
+  <path d="M470 240 L470 610 L235 610 L235 690" class="arrow dashed"/>
+  <path d="M1085 240 L1085 610 L630 610 L630 690" class="arrow dashed"/>
+  <path d="M1085 240 L1085 610 L1030 610 L1030 690" class="arrow dashed"/>
+  <path d="M390 758 L465 758" class="arrow"/>
+  <path d="M795 758 L870 758" class="arrow"/>
+  <path d="M1190 758 L1260 758" class="arrow"/>
+
+  <rect x="60" y="890" rx="16" ry="16" width="1480" height="60" class="gray"/>
+  <text x="800" y="928" text-anchor="middle" class="box-text">
+    Infrastructure: Docker Compose • .env configuration • Persistent volumes • Health checks • Kafka topic auto-creation
+  </text>
+</svg>
