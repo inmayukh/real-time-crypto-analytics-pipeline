@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  - name: stg_crypto_prices
+    description: Cleaned and incrementally processed crypto price events
+
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+
+      - name: event_timestamp
+        tests:
+          - not_null
+
+      - name: bitcoin_price
+        tests:
+          - not_null
+
+      - name: ethereum_price
+        tests:
+          - not_null
+
+  - name: crypto_price_metrics
+    description: Historical crypto price metrics
+
+    columns:
+      - name: metric_timestamp
+        tests:
+          - not_null
+
+      - name: bitcoin_price
+        tests:
+          - not_null
+
+      - name: ethereum_price
+        tests:
+          - not_null
+
+  - name: latest_crypto_prices
+    description: Latest current-state crypto prices per coin
+
+    columns:
+      - name: coin_id
+        tests:
+          - not_null
+          - unique
+
+      - name: price_usd
+        tests:
+          - not_null
+
+      - name: event_timestamp
+        tests:
+          - not_null
+
+  - name: stg_producer_api_metrics
+    description: Cleaned producer-side API monitoring metrics
+
+    columns:
+      - name: metric_timestamp
+        tests:
+          - not_null
+
+      - name: status
+        tests:
+          - not_null
+
+  - name: stg_consumer_processing_metrics
+    description: Cleaned consumer-side processing monitoring metrics
+
+    columns:
+      - name: metric_timestamp
+        tests:
+          - not_null
+
+      - name: status
+        tests:
+          - not_null
+
+  - name: pipeline_health_summary
+    description: Consolidated producer and consumer pipeline health summary
+
+    columns:
+      - name: latest_producer_metric_time
+        tests:
+          - not_null
+
+      - name: latest_consumer_metric_time
+        tests:
+          - not_null

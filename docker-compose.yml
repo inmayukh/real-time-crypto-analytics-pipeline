@@ -1,0 +1,118 @@
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "kafka-topics",
+          "--bootstrap-server",
+          "localhost:9092",
+          "--list"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse/init:/docker-entrypoint-initdb.d
+
+  airflow:
+    image: apache/airflow:2.9.3
+    container_name: airflow
+    depends_on:
+      - clickhouse
+    ports:
+      - "8081:8080"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
+      AIRFLOW__WWW_USER__USERNAME: ${AIRFLOW_USER}
+      AIRFLOW__WWW_USER__PASSWORD: ${AIRFLOW_PASSWORD}
+      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-clickhouse"
+    volumes:
+      - airflow_data:/opt/airflow
+      - ./airflow/dags:/opt/airflow/dags
+      - ./:/opt/project
+    command: standalone
+
+  kafka_init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka_init
+    depends_on:
+      - kafka
+    command: >
+      bash -c "
+      echo 'Waiting for Kafka...' &&
+      cub kafka-ready -b kafka:9092 1 30 &&
+      kafka-topics --create --if-not-exists
+      --topic crypto_prices
+      --bootstrap-server kafka:9092
+      --partitions 1
+      --replication-factor 1 &&
+      echo 'Kafka topic crypto_prices is ready'
+      "
+
+  crypto_producer:
+    build: .
+    container_name: crypto_producer
+    depends_on:
+      - kafka_init
+      - clickhouse
+    restart: unless-stopped
+    command: python ingestion/crypto_producer.py
+
+  crypto_consumer:
+    build: .
+    container_name: crypto_consumer
+    depends_on:
+      - kafka_init
+      - clickhouse
+    restart: unless-stopped
+    command: python ingestion/crypto_consumer.py
+
+volumes:
+  clickhouse_data:
+  airflow_data:

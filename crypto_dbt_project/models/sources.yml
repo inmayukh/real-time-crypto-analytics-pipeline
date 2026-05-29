@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: crypto_analytics
+
+    tables:
+      - name: raw_crypto_prices
+        description: Raw crypto price events ingested from Kafka into ClickHouse
+
+        columns:
+          - name: event_id
+            tests:
+              - not_null
+
+          - name: event_timestamp
+            tests:
+              - not_null
+
+          - name: bitcoin_price
+            tests:
+              - not_null
+
+          - name: ethereum_price
+            tests:
+              - not_null
+
+      - name: producer_api_metrics
+        description: Raw producer-side API monitoring metrics
+
+      - name: consumer_processing_metrics
+        description: Raw consumer-side processing metrics
+
+      - name: failed_crypto_events
+        description: Failed or invalid crypto events captured during ingestion
