@@ -817,11 +817,8 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 ## Known Limitations
 
 - Binance WebSocket data depends on external stream availability.
-- This is a local Docker Compose project, not a cloud deployment.
 - Airflow uses containerized local metadata persistence instead of an external PostgreSQL metadata database.
 - Alerting currently uses an Airflow failure callback pattern rather than real Slack/email integration.
-- The dashboard is local Streamlit, not deployed publicly.
-- No long-term retention or partition pruning strategy has been fully implemented yet.
 - No schema registry is used for Kafka event contracts.
 - No Kafka dead-letter topic is implemented yet.
 
@@ -832,13 +829,19 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 - Add PostgreSQL as the Airflow metadata database.
 - Add Slack or email alerts for Airflow failures.
 - Add Grafana or Superset alongside Streamlit.
-- Add ClickHouse partitioning and retention policies.
 - Add schema validation contracts for incoming Kafka events.
 - Add CI/CD checks for dbt models.
 - Add Great Expectations or advanced dbt tests.
 - Add Kafka dead-letter topic support.
 - Add a real CDC pipeline using PostgreSQL + Debezium + Kafka.
-- Deploy the stack to a cloud VM or Kubernetes environment.
+
+---
+
+## ✅ Recent Updates
+* Deployed to AWS EC2 (t3.small) — live dashboard at http://13.207.41.151:8501
+* Implemented tiered ClickHouse retention policy (RAW: 1 day, STAGING: 3 days)
+* Removed obsolete REST API producer metrics from pipeline health dashboard
+* Automated dbt runs every 5 minutes via cron job on EC2
 
 ---
 
