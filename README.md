@@ -791,11 +791,28 @@ Shows Airflow running sensors, dbt models, dbt tests, and pipeline health valida
 
 ---
 
-### 8. Streamlit Dashboard
+### 7. Streamlit Dashboard
 
 Shows live prices, volume leaderboard, rolling trends, and pipeline health metrics.
 
 ![Streamlit Dashboard](screenshots/streamlit-dashboard.png)
+
+## 🚀 Live Deployment
+Deployed on AWS EC2 (t3.small) with Docker Compose.
+
+**Live Dashboard:** http://13.207.41.151:8501
+
+> Instance may be stopped to manage costs. DM me to spin it up for a live demo.
+
+### Retention Policy
+| Layer | Retention |
+|---|---|
+| RAW | 1 day |
+| STAGING | 3 days |
+| Monitoring | 3 days |
+| MART | No TTL (current state only) |
+
+---
 
 ## Known Limitations
 
