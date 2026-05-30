@@ -1,0 +1,18 @@
+<clickhouse>
+    <max_server_memory_usage>800000000</max_server_memory_usage>
+    <max_server_memory_usage_to_ram_ratio>0.4</max_server_memory_usage_to_ram_ratio>
+    <mark_cache_size>67108864</mark_cache_size>
+    <mmap_cache_size>100</mmap_cache_size>
+    <compiled_expression_cache_size>33554432</compiled_expression_cache_size>
+    <listen_host>0.0.0.0</listen_host>
+    <metric_log remove="1"/>
+    <asynchronous_metric_log remove="1"/>
+    <query_log remove="1"/>
+    <query_thread_log remove="1"/>
+    <query_views_log remove="1"/>
+    <part_log remove="1"/>
+    <trace_log remove="1"/>
+    <crash_log remove="1"/>
+    <text_log remove="1"/>
+    <session_log remove="1"/>
+</clickhouse>

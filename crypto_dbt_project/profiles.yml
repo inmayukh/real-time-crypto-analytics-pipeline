@@ -1,0 +1,13 @@
+crypto_dbt_project:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: crypto_analytics
+      host: clickhouse
+      port: 8123
+      user: admin
+      password: Admin1234
+      secure: false
+      check_exchange: false
+      use_lw_deletes: false

@@ -1,6 +1,7 @@
 services:
 
   zookeeper:
+    mem_limit: 256m
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
     environment:
@@ -9,6 +10,7 @@ services:
       - "2181:2181"
 
   kafka:
+    mem_limit: 400m
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
     depends_on:
@@ -22,6 +24,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     healthcheck:
       test:
@@ -37,7 +40,7 @@ services:
       retries: 5
 
   clickhouse:
-    image: clickhouse/clickhouse-server:latest
+    image: clickhouse/clickhouse-server:23.8
     container_name: clickhouse
     ports:
       - "8123:8123"
@@ -58,8 +61,10 @@ services:
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./clickhouse/init:/docker-entrypoint-initdb.d
+      - ./clickhouse/config:/etc/clickhouse-server/config.d
 
   airflow:
+    mem_limit: 512m
     image: apache/airflow:2.9.3
     container_name: airflow
     depends_on:
@@ -71,6 +76,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
       AIRFLOW__WWW_USER__USERNAME: ${AIRFLOW_USER}
       AIRFLOW__WWW_USER__PASSWORD: ${AIRFLOW_PASSWORD}
+      AIRFLOW__WEBSERVER__WORKERS: 1
       _PIP_ADDITIONAL_REQUIREMENTS: "dbt-clickhouse clickhouse-connect"
     volumes:
       - airflow_data:/opt/airflow
@@ -111,9 +117,16 @@ services:
       - kafka_init
       - clickhouse
     restart: unless-stopped
+    environment:
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
     command: python ingestion/crypto_consumer.py
 
   streamlit_dashboard:
+    mem_limit: 200m
     build: .
     container_name: streamlit_dashboard
     depends_on:

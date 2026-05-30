@@ -81,3 +81,8 @@ CREATE TABLE IF NOT EXISTS crypto_analytics.raw_crypto_ticker_events
 )
 ENGINE = MergeTree()
 ORDER BY (symbol, event_timestamp);
+-- Retention policies
+ALTER TABLE crypto_analytics.raw_crypto_ticker_events MODIFY TTL ingestion_timestamp + INTERVAL 1 DAY;
+ALTER TABLE crypto_analytics.stg_crypto_ticker_events MODIFY TTL ingestion_timestamp + INTERVAL 3 DAY;
+ALTER TABLE crypto_analytics.failed_crypto_events MODIFY TTL failed_at + INTERVAL 3 DAY;
+ALTER TABLE crypto_analytics.consumer_processing_metrics MODIFY TTL metric_timestamp + INTERVAL 3 DAY;

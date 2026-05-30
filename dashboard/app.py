@@ -158,7 +158,7 @@ if selected_symbol:
             avg(price) AS avg_price
         FROM crypto_analytics.stg_crypto_ticker_events
         WHERE symbol = '{selected_symbol}'
-          AND event_timestamp >= now() - INTERVAL 60 MINUTE
+          AND event_timestamp >= now() - INTERVAL 30 MINUTE
         GROUP BY minute
         ORDER BY minute
     """)
