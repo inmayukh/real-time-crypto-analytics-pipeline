@@ -81,8 +81,6 @@ models:
 
   - name: pipeline_health_summary
     description: Consolidated producer and consumer pipeline health summary
-
-    columns:     
       - name: latest_consumer_metric_time
         tests:
           - not_null
