@@ -1,3 +1,5 @@
+![CI/CD](https://github.com/inmayukh/real-time-crypto-analytics-pipeline/actions/workflows/ci.yml/badge.svg)
+
 # Real-Time Crypto Market Analytics Pipeline
 
 ![Architecture Diagram](architecture/real_time_crypto_analytics_pipeline_diagram.png)
@@ -830,7 +832,6 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 - Add Slack or email alerts for Airflow failures.
 - Add Grafana or Superset alongside Streamlit.
 - Add schema validation contracts for incoming Kafka events.
-- Add CI/CD checks for dbt models.
 - Add Great Expectations or advanced dbt tests.
 - Add Kafka dead-letter topic support.
 - Add a real CDC pipeline using PostgreSQL + Debezium + Kafka.
@@ -842,6 +843,7 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 * Implemented tiered ClickHouse retention policy (RAW: 1 day, STAGING: 3 days)
 * Removed obsolete REST API producer metrics from pipeline health dashboard
 * Automated dbt runs every 5 minutes via cron job on EC2
+* Added full CI/CD pipeline — GitHub Actions runs dbt tests on every push; auto-deploys to AWS EC2 only when all tests pass
 
 ---
 
