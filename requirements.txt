@@ -4,3 +4,4 @@ clickhouse-connect
 websocket-client
 streamlit
 pandas
+plotly

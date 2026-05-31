@@ -163,11 +163,25 @@ if selected_symbol:
         ORDER BY minute
     """)
 
-    if not price_trend.empty:
-        price_trend["minute"] = pd.to_datetime(price_trend["minute"])
-        st.line_chart(price_trend.set_index("minute")["avg_price"])
-    else:
-        st.warning("No recent price trend data found for selected symbol.")
+if not price_trend.empty:
+    price_trend["minute"] = pd.to_datetime(price_trend["minute"])
+    import plotly.express as px
+    fig = px.line(
+        price_trend,
+        x="minute",
+        y="avg_price",
+        labels={"minute": "Time", "avg_price": "Avg Price (USDT)"},
+    )
+    fig.update_layout(
+        yaxis=dict(range=[
+             price_trend["avg_price"].min() * 0.9995,
+             price_trend["avg_price"].max() * 1.0005
+        ]),
+        margin=dict(l=0, r=0, t=30, b=0)
+    )
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.warning("No recent price trend data found for selected symbol.")
 
 
 st.subheader("Pipeline Health Summary")
