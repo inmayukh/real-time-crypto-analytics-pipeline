@@ -1,0 +1,27 @@
+name: CI - dbt Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run dbt tests on EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu/real-time-crypto-analytics-pipeline
+            docker compose exec -T airflow bash -c "
+              cd /opt/project/crypto_dbt_project &&
+              python -c \"from dbt.cli.main import dbtRunner; result = dbtRunner().invoke(['test', '--profiles-dir', '.']); exit(0 if result.success else 1)\"
+            "
