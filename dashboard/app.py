@@ -30,6 +30,7 @@ def get_clickhouse_client():
     )
 
 
+@st.cache_data(ttl=30)
 def query_df(sql):
     client = get_clickhouse_client()
     result = client.query(sql)
