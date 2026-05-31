@@ -839,7 +839,7 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 ---
 
 ## ✅ Recent Updates
-* Deployed to AWS EC2 (t3.small) — live dashboard at http://13.207.41.151:8501
+* Deployed to AWS EC2 (t3.small) — live dashboard at (http://15.206.66.165:8501/)
 * Implemented tiered ClickHouse retention policy (RAW: 1 day, STAGING: 3 days)
 * Removed obsolete REST API producer metrics from pipeline health dashboard
 * Automated dbt runs every 5 minutes via cron job on EC2
