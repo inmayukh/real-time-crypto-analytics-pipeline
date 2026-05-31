@@ -698,12 +698,6 @@ FROM crypto_analytics.pipeline_health_summary;
 
 ---
 
-### Pipeline Health Summary
-
-![Pipeline Health Summary](screenshots/pipeline-health-summary.png)
-
----
-
 ### Streamlit Dashboard
 
 ![Streamlit Dashboard](screenshots/streamlit-dashboard.png)
@@ -802,7 +796,7 @@ Shows live prices, volume leaderboard, rolling trends, and pipeline health metri
 ## 🚀 Live Deployment
 Deployed on AWS EC2 (t3.small) with Docker Compose.
 
-**Live Dashboard:** http://13.207.41.151:8501
+**Live Dashboard:** (http://15.206.66.165:8501/)
 
 > Instance may be stopped to manage costs. DM me to spin it up for a live demo.
 
