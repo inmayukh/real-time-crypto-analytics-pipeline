@@ -3,8 +3,19 @@ name: CI/CD - dbt Tests & Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'screenshots/**'
+      - 'architecture/**'
+      - '*.md'
+      
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'screenshots/**'
+      - 'architecture/**'
+      - '*.md'
 
 jobs:
   dbt-test:
