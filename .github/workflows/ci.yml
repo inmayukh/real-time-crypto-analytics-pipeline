@@ -1,4 +1,4 @@
-name: CI - dbt Tests
+name: CI/CD - dbt Tests & Deploy
 
 on:
   push:
@@ -25,3 +25,20 @@ jobs:
               cd /opt/project/crypto_dbt_project &&
               python -c \"from dbt.cli.main import dbtRunner; result = dbtRunner().invoke(['test', '--profiles-dir', '.']); exit(0 if result.success else 1)\"
             "
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: dbt-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu/real-time-crypto-analytics-pipeline
+            git pull
+            docker compose up -d --build streamlit_dashboard
+            /home/ubuntu/run_dbt.sh
