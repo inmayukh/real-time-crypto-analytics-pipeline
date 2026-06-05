@@ -672,32 +672,6 @@ FROM crypto_analytics.pipeline_health_summary;
 
 ---
 
-## Screenshots
-
-### Docker Containers Running
-
-![Docker Containers Running](screenshots/docker-running-processes.png)
-
----
-
-### Airflow DAG Success
-
-![Airflow DAG Success](screenshots/airflow-dag-success.png)
-
----
-
-### ClickHouse RAW Events
-
-![ClickHouse RAW Events](screenshots/clickhouse-raw-events.png)
-
----
-
-### dbt Test Success
-
-![dbt Test Success](screenshots/dbt-test-success.png)
-
----
-
 ### Streamlit Dashboard
 
 ![Streamlit Dashboard](screenshots/streamlit-dashboard.png)
@@ -796,7 +770,7 @@ Shows live prices, volume leaderboard, rolling trends, and pipeline health metri
 ## 🚀 Live Deployment
 Deployed on AWS EC2 (t3.small) with Docker Compose.
 
-**Live Dashboard:** (http://15.206.66.165:8501/)
+**Live Dashboard:** (http://13.206.226.229:8501)
 
 > Instance may be stopped to manage costs. DM me to spin it up for a live demo.
 
