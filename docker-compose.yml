@@ -118,12 +118,31 @@ services:
       - clickhouse
     restart: unless-stopped
     environment:
+      KAFKA_BOOTSTRAP_SERVER: kafka:9092
+      KAFKA_TOPIC: crypto_prices
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      AWS_REGION: ap-south-1
+    command: python ingestion/crypto_consumer.py
+
+  s3_loader:
+    build: .
+    container_name: s3_loader
+    depends_on:
+      - clickhouse
+    restart: unless-stopped
+    environment:
       CLICKHOUSE_HOST: clickhouse
       CLICKHOUSE_PORT: 8123
       CLICKHOUSE_DB: ${CLICKHOUSE_DB}
       CLICKHOUSE_USER: ${CLICKHOUSE_USER}
       CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
-    command: python ingestion/crypto_consumer.py
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      AWS_REGION: ap-south-1
+    command: python ingestion/s3_loader.py
 
   streamlit_dashboard:
     mem_limit: 200m

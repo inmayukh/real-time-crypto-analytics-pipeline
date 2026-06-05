@@ -5,3 +5,5 @@ websocket-client
 streamlit
 pandas
 plotly
+boto3
+pyarrow
