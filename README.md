@@ -796,13 +796,16 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 
 ## Future Improvements
 
-- Add PostgreSQL as the Airflow metadata database.
-- Add Slack or email alerts for Airflow failures.
 - Add Grafana or Superset alongside Streamlit.
 - Add schema validation contracts for incoming Kafka events.
 - Add Great Expectations or advanced dbt tests.
 - Add Kafka dead-letter topic support.
 - Add a real CDC pipeline using PostgreSQL + Debezium + Kafka.
+- Add Grafana dashboard connected to ClickHouse for real-time metrics monitoring
+- Add S3 replay script to reprocess historical Parquet files into ClickHouse on demand
+- Replace cron-based dbt runs with a lightweight orchestrator like Prefect or Dagster
+- Add SNS/SES alerts when S3 loader fails or ClickHouse insert errors exceed threshold
+- Add partitioning to ClickHouse tables for faster time-range queries at scale
 
 ---
 
@@ -812,6 +815,7 @@ Deployed on AWS EC2 (t3.small) with Docker Compose.
 * Removed obsolete REST API producer metrics from pipeline health dashboard
 * Automated dbt runs every 5 minutes via cron job on EC2
 * Added full CI/CD pipeline — GitHub Actions runs dbt tests on every push; auto-deploys to AWS EC2 only when all tests pass
+* Redesigned architecture — S3 as landing zone and source of truth; consumer writes Parquet files to S3, s3_loader ingests into ClickHouse every 5 minutes
 
 ---
 
